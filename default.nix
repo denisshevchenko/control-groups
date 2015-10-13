@@ -19,8 +19,8 @@ let
           fastcgi filepath process split utf8-string
         ];
         homepage = "http://github.com/githubuser/control-groups#readme";
-        description = "Simple project template from stack";
-        license = stdenv.lib.licenses.bsd3;
+        description = "Simple FastCGI server for working with cgroups";
+        license = stdenv.lib.licenses.mit;
       };
 
   haskellPackages = if compiler == "default"
