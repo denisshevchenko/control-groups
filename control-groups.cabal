@@ -35,5 +35,6 @@ executable control-groups.fcgi
                      , bytestring
                      , utf8-string
                      , attoparsec
+                     , process
 
   ghc-options:       -Wall
