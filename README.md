@@ -98,4 +98,7 @@ Possible response:
 1. Written with ghc-7.10.2, cabal-install-1.22.6.0 and Cabal-1.22.4.0.
 2. Tested with lighttpd-1.4.37 and NixOS 15.09.
 
+## TODO
+
+1. More informative response if request contains name of cgroup that doesn't really exists.
 
