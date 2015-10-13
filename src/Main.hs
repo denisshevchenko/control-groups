@@ -1,12 +1,23 @@
+{-# LANGUAGE MultiWayIf #-}
+
 module Main where
 
-import Network.FastCGI
+import qualified Data.Map.Lazy      as M
+import           Network.FastCGI
 
-cgroupWork :: CGI CGIResult
-cgroupWork = do
-    setHeader "Content-type" "application/json"
-    output "{ \"hello\" : \"world\" }"
+import           Parsers
+import           Invalid
+import           CGroups
+import           PlaceTask
+import           Tasks
 
 main :: IO ()
-main = runFastCGI cgroupWork
+main = runFastCGI cGroupWork
 
+cGroupWork :: CGI CGIResult
+cGroupWork = queryString >>= \rawQuery ->
+    let queryData = parse rawQuery in
+    if | M.member "list" queryData  -> showListOfCGroups
+       | M.member "group" queryData -> showListOfTasksInCGroup queryData
+       | M.member "task" queryData  -> placeTaskIntoCGroup queryData
+       | otherwise                  -> reportAboutInvalid rawQuery
