@@ -6,8 +6,8 @@ import Network.FastCGI
 
 reportAboutInvalid :: String -> CGI CGIResult
 reportAboutInvalid rawQuery = do
-    setHeader "Content-type" "text/plain"
+    setHeader "Content-type" "text/html"
     setStatus 400 "Bad Request"
-    output $ "Sorry, your request '" 
+    output $ "<div style=\"text-align: center; padding-top: 30px;\"><h2>Sorry, your request '"
              ++ rawQuery 
-             ++ "' is invalid. Please refer to documentation."
+             ++ "' is invalid</h2><br/>Please refer to documentation.</div>"

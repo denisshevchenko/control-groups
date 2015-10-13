@@ -47,6 +47,4 @@ parseTaskMovingFrom rawQuery =
     where pairsOfParameters = splitOn "&" rawQuery
 
 singleEqualSign :: String -> Bool
-singleEqualSign pairWithParameter =
-    length (splitOn "=" pairWithParameter) == 2
-
+singleEqualSign pairWithParameter = length (splitOn "=" pairWithParameter) == 2
