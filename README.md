@@ -100,5 +100,5 @@ Possible response:
 
 ## TODO
 
-1. More informative response if request contains name of cgroup that doesn't really exists.
+1. More informative response if request contains name of cgroup that doesn't really exist.
 
