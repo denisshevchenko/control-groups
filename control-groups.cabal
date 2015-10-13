@@ -34,5 +34,6 @@ executable control-groups.fcgi
                      , aeson-pretty
                      , bytestring
                      , utf8-string
+                     , attoparsec
 
   ghc-options:       -Wall

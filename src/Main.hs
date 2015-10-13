@@ -8,7 +8,7 @@ import Data.Map.Lazy
 import Network.FastCGI
 
 import Parsers
-import Invalid
+import Invalid (reportAboutInvalidQuery)
 import CGroups
 import PlaceTask
 import Tasks
@@ -22,4 +22,4 @@ cGroupWork = queryString >>= \rawQuery ->
     if | member "list"  queryData -> showListOfCGroups
        | member "group" queryData -> showListOfTasksInCGroup queryData
        | member "task"  queryData -> placeTaskIntoCGroup queryData
-       | otherwise                -> reportAboutInvalid rawQuery
+       | otherwise                -> reportAboutInvalidQuery rawQuery
