@@ -5,6 +5,7 @@ module Tasks (
 ) where
 
 import           Invalid                            (reportAboutInvalidTasksFile) 
+import           Types
 
 import           Control.Applicative                (many)
 import           Data.Attoparsec.ByteString.Char8
@@ -18,7 +19,6 @@ import           Control.Exception
 import qualified Data.Map.Lazy                      as M
 import           Data.Maybe
 import           Network.FastCGI
-import           Types
 
 -- Helper type for Attoparsec and Aeson.
 type TasksPIDs = [Int]

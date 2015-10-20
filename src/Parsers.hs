@@ -27,7 +27,7 @@ parseTasksFrom rawQuery =
                M.empty
            else
                M.fromList [("group", cGroupName)]
-    where pairsOfParameters = splitOn "&" rawQuery
+    where pairsOfParameters = splitOnBaseSeparator rawQuery
 
 parseTaskMovingFrom :: String -> SMap
 parseTaskMovingFrom rawQuery = 
@@ -44,7 +44,10 @@ parseTaskMovingFrom rawQuery =
                M.empty
            else
                M.fromList [("task", taskId), ("intogroup", cGroupName)]
-    where pairsOfParameters = splitOn "&" rawQuery
+    where pairsOfParameters = splitOnBaseSeparator rawQuery
+
+splitOnBaseSeparator :: String -> [String]
+splitOnBaseSeparator = splitOn "&"
 
 singleEqualSign :: String -> Bool
 singleEqualSign pairWithParameter = length (splitOn "=" pairWithParameter) == 2

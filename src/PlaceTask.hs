@@ -9,9 +9,11 @@ import qualified Codec.Binary.UTF8.String           as U
 import           Data.Aeson
 import           Data.Aeson.Encode.Pretty           (encodePretty)
 import           System.FilePath.Posix              ((</>))
+import           System.Directory                   (doesFileExist)
 import           Control.Exception
 import qualified Data.Map.Lazy                      as M
 import           Data.Maybe
+import           Data.Char
 import           System.Process
 import           System.Exit
 import           Network.FastCGI
@@ -44,13 +46,22 @@ placeTaskIntoCGroup :: SMap -> CGI CGIResult
 placeTaskIntoCGroup queryData = do
     setHeader "Content-type" "application/json"
     let taskPID           = fromJust (M.lookup "task" queryData)
+        -- Make sure that taskPID is just a number...
+        taskPIDIsANumber  = all isDigit taskPID
         nameOfCGroup      = fromJust (M.lookup "intogroup" queryData)
         pathToTasksFile   = "/sys/fs/cgroup" </> nameOfCGroup </> "tasks"
         attachTaskCommand = "echo " ++ taskPID ++ " >> " ++ pathToTasksFile
-    resultCode <- liftIO $ system attachTaskCommand `catch` possibleErrors
-    case resultCode of
-        ExitSuccess   -> itsDone nameOfCGroup taskPID
-        ExitFailure _ -> failure nameOfCGroup taskPID
+    -- Make sure that nameOfCGroup is correct name of cgroup-file...
+    cGroupActuallyExists <- liftIO $ doesFileExist pathToTasksFile
+    if taskPIDIsANumber && cGroupActuallyExists
+    then do
+        -- At this point we already know that attachTaskCommand is safe.
+        resultCode <- liftIO $ system attachTaskCommand `catch` possibleErrors
+        case resultCode of
+            ExitSuccess   -> itsDone nameOfCGroup taskPID
+            ExitFailure _ -> failure nameOfCGroup taskPID
+    else
+        failure nameOfCGroup taskPID
 
 possibleErrors :: IOException -> IO ExitCode
 possibleErrors _ = return $ ExitFailure 1
