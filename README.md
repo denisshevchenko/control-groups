@@ -15,6 +15,7 @@ Simple FastCGI server for work with [cgroups](https://www.kernel.org/doc/Documen
 Request:
 
 ```
+GET
 http://localhost/cgroup?list
 ```
 
@@ -46,6 +47,7 @@ Based on content of the file `/sys/fs/cgroup/NAME/tasks`, where `NAME` is the na
 Request to retrieve a list of tasks in the cgroup `blkio`:
 
 ```
+GET
 http://localhost/cgroup?group=blkio&tasks
 ```
 
@@ -80,7 +82,11 @@ Based on adding of the process' PID into the file `/sys/fs/cgroup/NAME/tasks`, w
 Request to attach a process with PID `345` into cgroup `blkio`:
 
 ```
-http://localhost/cgroup?task=345&intogroup=blkio
+POST
+http://localhost/cgroup
+
+Input data
+task=345&intogroup=blkio
 ```
 
 Possible response:
@@ -91,6 +97,12 @@ Possible response:
     "cgroup": "blkio",
     "pid": "345"
 }
+```
+
+Tested with:
+
+```
+$ curl --data "task=345&intoasdfgroup=blkio" http://localhost/cgroup
 ```
 
 ## Technical details
