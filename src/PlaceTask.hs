@@ -3,6 +3,8 @@
 module PlaceTask (
     placeTaskIntoCGroup
 ) where
+                       
+import           Types
 
 import qualified Data.ByteString.Lazy               as LB
 import qualified Codec.Binary.UTF8.String           as U
@@ -12,12 +14,10 @@ import           System.FilePath.Posix              ((</>))
 import           System.Directory                   (doesFileExist)
 import           Control.Exception
 import qualified Data.Map.Lazy                      as M
-import           Data.Maybe
 import           Data.Char
 import           System.Process
 import           System.Exit
 import           Network.FastCGI
-import           Types
 
 data AttachedTask = AttachedTask CGroupName TaskPID
 data NonAttachedTask = NonAttachedTask CGroupName TaskPID
@@ -45,14 +45,16 @@ instance ToJSON NonAttachedTask where
 placeTaskIntoCGroup :: SMap -> CGI CGIResult
 placeTaskIntoCGroup queryData = do
     setHeader "Content-type" "application/json"
-    let taskPID           = fromJust (M.lookup "task" queryData)
+
+    let taskPID           = M.findWithDefault "" "task" queryData
         -- Make sure that taskPID is just a number...
         taskPIDIsANumber  = all isDigit taskPID
-        nameOfCGroup      = fromJust (M.lookup "intogroup" queryData)
+        nameOfCGroup      = M.findWithDefault "" "intogroup" queryData
         pathToTasksFile   = "/sys/fs/cgroup" </> nameOfCGroup </> "tasks"
         attachTaskCommand = "echo " ++ taskPID ++ " >> " ++ pathToTasksFile
     -- Make sure that nameOfCGroup is correct name of cgroup-file...
     cGroupActuallyExists <- liftIO $ doesFileExist pathToTasksFile
+
     if taskPIDIsANumber && cGroupActuallyExists
     then do
         -- At this point we already know that attachTaskCommand is safe.

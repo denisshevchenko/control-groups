@@ -23,6 +23,7 @@ instance ToJSON CGroups where
 -- Show list of available cgroups. Based on content of /sys/fs/cgroup.
 showListOfCGroups :: CGI CGIResult
 showListOfCGroups = do
+    -- This is GET method...
     setHeader "Content-type" "application/json"
     cGroups <- liftIO $ getDirectoryContents "/sys/fs/cgroup/" `catch` possibleErrors
     let names = filter notHiddenPaths (takeFileName <$> cGroups)

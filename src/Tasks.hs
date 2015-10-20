@@ -40,6 +40,7 @@ instance ToJSON Tasks where
 -- Show list of tasks in particular cgroup. Based on content of /sys/fs/cgroup/NAME/tasks.
 showListOfTasksInCGroup :: SMap -> CGI CGIResult
 showListOfTasksInCGroup queryData = do
+    -- This is GET method...
     let nameOfCGroup    = fromJust (M.lookup "group" queryData)
         pathToTasksFile = "/sys/fs/cgroup" </> nameOfCGroup </> "tasks"
     tasksPIDs <- liftIO $ B.readFile pathToTasksFile `catch` possibleErrors
