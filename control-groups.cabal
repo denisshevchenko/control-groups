@@ -21,6 +21,7 @@ executable control-groups.fcgi
                      , Tasks
                      , PlaceTask
                      , Invalid
+                     , Types
 
   default-language:    Haskell2010
 

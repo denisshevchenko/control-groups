@@ -18,13 +18,12 @@ import           Control.Exception
 import qualified Data.Map.Lazy                      as M
 import           Data.Maybe
 import           Network.FastCGI
+import           Types
 
-type SMap         = M.Map String String
-type NameOfCGroup = String
 -- Helper type for Attoparsec and Aeson.
-type TasksPIDs    = [Int]
+type TasksPIDs = [Int]
 
-data Tasks = Tasks NameOfCGroup TasksPIDs
+data Tasks = Tasks CGroupName TasksPIDs
 
 aPIDParser :: Parser Int
 aPIDParser = decimal
@@ -52,7 +51,7 @@ showListOfTasksInCGroup queryData = do
 possibleErrors :: IOException -> IO B.ByteString
 possibleErrors _ = return ""
 
-showListOfTasks :: NameOfCGroup -> TasksPIDs -> CGI CGIResult
+showListOfTasks :: CGroupName -> TasksPIDs -> CGI CGIResult
 showListOfTasks nameOfCGroup aPIDs = do
     setHeader "Content-type" "application/json"
     output . U.decode . LB.unpack . encodePretty $ Tasks nameOfCGroup aPIDs

@@ -15,13 +15,10 @@ import           Data.Maybe
 import           System.Process
 import           System.Exit
 import           Network.FastCGI
+import           Types
 
-type SMap         = M.Map String String
-type NameOfCGroup = String
-type TaskPID      = String
-
-data AttachedTask = AttachedTask NameOfCGroup TaskPID
-data NonAttachedTask = NonAttachedTask NameOfCGroup TaskPID
+data AttachedTask = AttachedTask CGroupName TaskPID
+data NonAttachedTask = NonAttachedTask CGroupName TaskPID
 
 successfullyStatus :: String
 successfullyStatus = "successfully"
@@ -58,11 +55,11 @@ placeTaskIntoCGroup queryData = do
 possibleErrors :: IOException -> IO ExitCode
 possibleErrors _ = return $ ExitFailure 1
 
-itsDone :: NameOfCGroup -> TaskPID -> CGI CGIResult
+itsDone :: CGroupName -> TaskPID -> CGI CGIResult
 itsDone nameOfCGroup taskPID =
     output . U.decode . LB.unpack . encodePretty $ AttachedTask nameOfCGroup taskPID
 
-failure :: NameOfCGroup -> TaskPID -> CGI CGIResult
+failure :: CGroupName -> TaskPID -> CGI CGIResult
 failure nameOfCGroup taskPID = do
     setStatus 500 "Internal Server Error"
     output . U.decode . LB.unpack . encodePretty $ NonAttachedTask nameOfCGroup taskPID
